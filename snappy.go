@@ -1,3 +1,4 @@
+// Package snappy provides a simple interface with the Snappy API
 package snappy
 
 import (
