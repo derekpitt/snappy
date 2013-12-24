@@ -10,7 +10,8 @@ import (
   "net/url"
 )
 
-type snappy struct {
+// Snappy is the main type
+type Snappy struct {
   username       string
   password       string
   endpointPrefix string
@@ -27,8 +28,8 @@ const (
 )
 
 // WithAPIKey creates a new snappy client using your API key
-func WithAPIKey(apiKey string) *snappy {
-  return &snappy{
+func WithAPIKey(apiKey string) *Snappy {
+  return &Snappy{
     username:       apiKey,
     password:       "x",
     endpointPrefix: defaultEnpointPrefix,
@@ -36,15 +37,15 @@ func WithAPIKey(apiKey string) *snappy {
 }
 
 // WithUsernameAndPassword creates a new snappy client using your Username and Password
-func WithUsernameAndPassword(username, password string) *snappy {
-  return &snappy{
+func WithUsernameAndPassword(username, password string) *Snappy {
+  return &Snappy{
     username:       username,
     password:       password,
     endpointPrefix: defaultEnpointPrefix,
   }
 }
 
-func (s *snappy) get(up urlAndParams) (reader io.ReadCloser, err error) {
+func (s *Snappy) get(up urlAndParams) (reader io.ReadCloser, err error) {
   client := &http.Client{}
   fullURL := fmt.Sprintf("%s%s", s.endpointPrefix, up.url)
 
@@ -75,7 +76,7 @@ func (s *snappy) get(up urlAndParams) (reader io.ReadCloser, err error) {
   return res.Body, nil
 }
 
-func (s *snappy) getReadAll(up urlAndParams) (b []byte, err error) {
+func (s *Snappy) getReadAll(up urlAndParams) (b []byte, err error) {
   rc, err := s.get(up)
 
   if err != nil {
@@ -86,7 +87,7 @@ func (s *snappy) getReadAll(up urlAndParams) (b []byte, err error) {
   return ioutil.ReadAll(rc)
 }
 
-func (s *snappy) unmarshalJSONAtURL(up urlAndParams, v interface{}) (err error) {
+func (s *Snappy) unmarshalJSONAtURL(up urlAndParams, v interface{}) (err error) {
   b, err := s.getReadAll(up)
 
   if err != nil {

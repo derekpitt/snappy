@@ -30,7 +30,8 @@ type Ticket struct {
   Opener   Contact   `json:"opener"`
 }
 
-func (s *snappy) Ticket(ticketID int) (ticket Ticket, err error) {
+// Ticket gets the details of a ticket
+func (s *Snappy) Ticket(ticketID int) (ticket Ticket, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/ticket/%d", ticketID),
   }
@@ -69,7 +70,8 @@ type Note struct {
   Attachments []Document `json:"attachments"`
 }
 
-func (s *snappy) TicketNotes(ticketID int) (notes []Note, err error) {
+// TicketNotes gets the notes attached to a ticketID
+func (s *Snappy) TicketNotes(ticketID int) (notes []Note, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/ticket/%d/notes", ticketID),
   }
@@ -80,7 +82,7 @@ func (s *snappy) TicketNotes(ticketID int) (notes []Note, err error) {
 
 // DownloadTicketAttachment downloads an attachment.
 // Close the read closer after you are done with it please :)
-func (s *snappy) DownloadTicketAttachment(ticketID, attachmentID int) (rc io.ReadCloser, err error) {
+func (s *Snappy) DownloadTicketAttachment(ticketID, attachmentID int) (rc io.ReadCloser, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/ticket/%d/attachment/%d/download", ticketID, attachmentID),
   }

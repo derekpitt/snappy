@@ -21,7 +21,7 @@ type Mailbox struct {
   UpdatedAt      string `json:"updated_at"`
 }
 
-func (s *snappy) ticketsAtMailboxEndpoint(mailboxID int, endpoint string) (tickets []Ticket, err error) {
+func (s *Snappy) ticketsAtMailboxEndpoint(mailboxID int, endpoint string) (tickets []Ticket, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/mailbox/%d/%s", mailboxID, endpoint),
   }
@@ -30,14 +30,17 @@ func (s *snappy) ticketsAtMailboxEndpoint(mailboxID int, endpoint string) (ticke
   return
 }
 
-func (s *snappy) WaitingAtMailbox(mailboxID int) (tickets []Ticket, err error) {
+// WaitingAtMailbox gets the tickets that are a waiting status
+func (s *Snappy) WaitingAtMailbox(mailboxID int) (tickets []Ticket, err error) {
   return s.ticketsAtMailboxEndpoint(mailboxID, "tickets")
 }
 
-func (s *snappy) InboxAtMailbox(mailboxID int) (tickets []Ticket, err error) {
+// InboxAtMailbox gets the tickets that are a new and unanssigned status
+func (s *Snappy) InboxAtMailbox(mailboxID int) (tickets []Ticket, err error) {
   return s.ticketsAtMailboxEndpoint(mailboxID, "inbox")
 }
 
-func (s *snappy) YoursAtMailbox(mailboxID int) (tickets []Ticket, err error) {
+// YoursAtMailbox get the tickets that are waiting and assigned to you
+func (s *Snappy) YoursAtMailbox(mailboxID int) (tickets []Ticket, err error) {
   return s.ticketsAtMailboxEndpoint(mailboxID, "yours")
 }

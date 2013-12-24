@@ -19,7 +19,8 @@ type Account struct {
   CustomDomain string `json:"custom_domain"`
 }
 
-func (s *snappy) Accounts() (a []Account, err error) {
+// Accounts gets all of the accounts that you have access to
+func (s *Snappy) Accounts() (a []Account, err error) {
   up := urlAndParams{
     url: "/accounts",
   }
@@ -48,7 +49,8 @@ type Employee struct {
   Address    string `json:"address"`
 }
 
-func (s *snappy) Staff(accountID int) (staff []Employee, err error) {
+// Staff returns all of the staff associated with an account
+func (s *Snappy) Staff(accountID int) (staff []Employee, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/staff", accountID),
   }
@@ -56,7 +58,8 @@ func (s *snappy) Staff(accountID int) (staff []Employee, err error) {
   return
 }
 
-func (s *snappy) Mailboxes(accountID int) (mailboxes []Mailbox, err error) {
+// Mailboxes returns all of the mailboxes associated with an account
+func (s *Snappy) Mailboxes(accountID int) (mailboxes []Mailbox, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/mailboxes", accountID),
   }
@@ -77,7 +80,8 @@ type Contact struct {
   UpdatedAt string `json:"updated_at"`
 }
 
-func (s *snappy) ContactByID(accountID, contactID int) (contact Contact, err error) {
+// ContactByID returns a Contact matching a contactID
+func (s *Snappy) ContactByID(accountID, contactID int) (contact Contact, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/contacts/%d", accountID, contactID),
   }
@@ -85,7 +89,8 @@ func (s *snappy) ContactByID(accountID, contactID int) (contact Contact, err err
   return
 }
 
-func (s *snappy) ContactByEmail(accountID int, email string) (contact Contact, err error) {
+// ContactByEmail returns a Contact matching an email address
+func (s *Snappy) ContactByEmail(accountID int, email string) (contact Contact, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/contacts/%s", accountID, url.QueryEscape(email)),
   }
@@ -103,7 +108,10 @@ type SearchResults struct {
   Tickets []Ticket `json:"data"`
 }
 
-func (s *snappy) Search(accountID int, query string, page int) (results SearchResults, err error) {
+// Search returns all of the tickets that match the query. You can specify a page.
+// page should start at 1. SearchResults.Meta.Total contains information you can use to determine how
+// many pages there are.
+func (s *Snappy) Search(accountID int, query string, page int) (results SearchResults, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/search", accountID),
     params: map[string][]string{
@@ -115,7 +123,8 @@ func (s *snappy) Search(accountID int, query string, page int) (results SearchRe
   return
 }
 
-func (s *snappy) Documents(accountID int) (documents []Document, err error) {
+// Documents gets all documents for an account
+func (s *Snappy) Documents(accountID int) (documents []Document, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/documents", accountID),
   }
@@ -125,7 +134,7 @@ func (s *snappy) Documents(accountID int) (documents []Document, err error) {
 
 // DownloadDocument downloads an attachment.
 // Close the read closer after you are done with it please :)
-func (s *snappy) DownloadDocument(accountID, documentID int) (rc io.ReadCloser, err error) {
+func (s *Snappy) DownloadDocument(accountID, documentID int) (rc io.ReadCloser, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/document/%d/download", accountID, documentID),
   }
@@ -167,7 +176,8 @@ type WallComment struct {
   Staff Employee `json:"staff"`
 }
 
-func (s *snappy) Wall(accountID int) (posts []WallPost, err error) {
+// Wall gets the latest 25 wall posts
+func (s *Snappy) Wall(accountID int) (posts []WallPost, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/wall", accountID),
   }
@@ -175,7 +185,8 @@ func (s *snappy) Wall(accountID int) (posts []WallPost, err error) {
   return
 }
 
-func (s *snappy) WallAfter(accountID, afterWallPostID int) (posts []WallPost, err error) {
+// WallAfter gets 25 wall posts that come after afterWallPostID
+func (s *Snappy) WallAfter(accountID, afterWallPostID int) (posts []WallPost, err error) {
   up := urlAndParams{
     url: fmt.Sprintf("/account/%d/wall", accountID),
     params: map[string][]string{

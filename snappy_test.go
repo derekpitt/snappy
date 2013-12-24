@@ -11,7 +11,7 @@ import (
 var (
   mux    *http.ServeMux
   server *httptest.Server
-  client *snappy
+  client *Snappy
 )
 
 func setup() {
