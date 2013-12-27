@@ -31,6 +31,7 @@ func TestTicket(t *testing.T) {
         "first_staff_reply_at":null,
         "default_subject":"Default Subject",
         "summary":"Summary",
+        "nonce":"123",
         "next_recipients":{
            "cc":[
 

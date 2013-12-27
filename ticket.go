@@ -25,6 +25,7 @@ type Ticket struct {
   UpdatedAt         string   `json:"updated_at"`
   Unread            bool     `json:"unread"`
   Tags              []string `json:"tags"`
+  TicketNonce       string   `json:"nonce"`
 
   Contacts []Contact `json:"contacts"`
   Mailbox  Mailbox   `json:"mailbox"`
