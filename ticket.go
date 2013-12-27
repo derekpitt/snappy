@@ -1,6 +1,7 @@
 package snappy
 
 import (
+  "encoding/json"
   "fmt"
   "io"
 )
@@ -88,4 +89,26 @@ func (s *Snappy) DownloadTicketAttachment(ticketID, attachmentID int) (rc io.Rea
   }
 
   return s.get(up)
+}
+
+// UpdateTags will update the tags for a ticket
+// If you want to use a []string{} gfor tags...  call lile:
+// s.UpdateTags(1234, []string{"1", "2"}...)
+func (s *Snappy) UpdateTags(ticketID int, tags ...string) (err error) {
+  up := urlAndParams{
+    url: fmt.Sprintf("/ticket/%d/tags", ticketID),
+  }
+
+  b, err := json.Marshal(tags)
+
+  if err != nil {
+    return
+  }
+
+  rc, err := s.postForm(up, map[string][]string{
+    "tags": []string{string(b)},
+  })
+  defer rc.Close()
+
+  return
 }

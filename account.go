@@ -142,7 +142,7 @@ func (s *Snappy) DownloadDocument(accountID, documentID int) (rc io.ReadCloser, 
   return s.get(up)
 }
 
-// WallPost hold information about a Wall Post
+// WallPost holds information about a Wall Post
 type WallPost struct {
   ID              int    `json:"id"`
   AccountID       int    `json:"account_id"`
@@ -160,6 +160,16 @@ type WallPost struct {
   Likes     []string      `json:"likes"`
   LikeCount int           `json:"like_count"`
   Comments  []WallComment `json:"comments"`
+}
+
+// NewWallPost holds information for a New Wall Post
+type NewWallPost struct {
+  Content string   `json:"content"`
+  Type    string   `json:"type"`
+  Tags    []string `json:"tags"`
+
+  TicketID int `json:"ticket,omitempty"`
+  NoteID   int `json:"note,omitempty"`
 }
 
 // WallComment holds information about a comment on a Wall Post
@@ -194,5 +204,78 @@ func (s *Snappy) WallAfter(accountID, afterWallPostID int) (posts []WallPost, er
     },
   }
   err = s.unmarshalJSONAtURL(up, &posts)
+  return
+}
+
+// LikeWallPost will like a wall post
+func (s *Snappy) LikeWallPost(accountID, wallPostID int) (err error) {
+  up := urlAndParams{
+    url: fmt.Sprintf("/account/%d/wall/%d/like", accountID, wallPostID),
+  }
+
+  rc, err := s.post(up, "", nil)
+  defer rc.Close()
+
+  return
+}
+
+// UnlikeWallPost will unlike a wall post
+func (s *Snappy) UnlikeWallPost(accountID, wallPostID int) (err error) {
+  up := urlAndParams{
+    url: fmt.Sprintf("/account/%d/wall/%d/like", accountID, wallPostID),
+  }
+
+  rc, err := s.del(up)
+  defer rc.Close()
+
+  return
+}
+
+// CommentWallPost will comment on a wall post
+func (s *Snappy) CommentWallPost(accountID, wallPostID int, comment string) (err error) {
+  up := urlAndParams{
+    url: fmt.Sprintf("/account/%d/wall/%d/comment", accountID, wallPostID),
+  }
+
+  rc, err := s.postForm(up, map[string][]string{
+    "comment": []string{comment},
+  })
+  defer rc.Close()
+
+  return
+}
+
+// DeleteComment will delete a comment
+func (s *Snappy) DeleteComment(accountID, wallPostID, commentID int) (err error) {
+  up := urlAndParams{
+    url: fmt.Sprintf("/account/%d/wall/%d/comment/%d", accountID, wallPostID, commentID),
+  }
+
+  rc, err := s.del(up)
+  defer rc.Close()
+
+  return
+}
+
+// CreateWallPost creates a wall post using NewWallPost
+func (s *Snappy) CreateWallPost(accountID int, newPost NewWallPost) (err error) {
+  up := urlAndParams{
+    url: fmt.Sprintf("/account/%d/wall", accountID),
+  }
+
+  _, err = s.postAsJSON(up, newPost)
+
+  return
+}
+
+// DeleteWallPost deletes a wall post
+func (s *Snappy) DeleteWallPost(accountID, wallPostID int) (err error) {
+  up := urlAndParams{
+    url: fmt.Sprintf("/account/%d/wall/%d", accountID, wallPostID),
+  }
+
+  rc, err := s.del(up)
+  defer rc.Close()
+
   return
 }

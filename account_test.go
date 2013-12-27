@@ -2,9 +2,12 @@ package snappy
 
 import (
   "bytes"
+  "encoding/json"
   "fmt"
   "io/ioutil"
   "net/http"
+  "net/url"
+  "reflect"
   "testing"
 )
 
@@ -638,5 +641,153 @@ func TestWallAfter(t *testing.T) {
 
   if len(posts) != 1 {
     t.Error("len(posts) != 1")
+  }
+}
+
+func TestLikeWallPost(t *testing.T) {
+  setup()
+  defer teardown()
+
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "POST" {
+      t.Error("Expected POST method in LikeWallPost()")
+    }
+
+    w.WriteHeader(http.StatusOK)
+  })
+
+  err := client.LikeWallPost(1, 1)
+
+  if err != nil {
+    t.Error("Expected no error in LikeWallPost()")
+  }
+}
+
+func TestUnlikeWallPost(t *testing.T) {
+  setup()
+  defer teardown()
+
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "DELETE" {
+      t.Error("Expected DELETE method in LikeWallPost()")
+    }
+
+    w.WriteHeader(http.StatusOK)
+  })
+
+  err := client.UnlikeWallPost(1, 1)
+
+  if err != nil {
+    t.Error("Expected no error in UnlikeWallPost()")
+  }
+}
+
+func TestCommentWallPost(t *testing.T) {
+  setup()
+  defer teardown()
+
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "POST" {
+      t.Error("Expected POST method in CommentWallPost()")
+    }
+
+    b, _ := ioutil.ReadAll(r.Body)
+    defer r.Body.Close()
+
+    parsedCommentFormValue, err := url.ParseQuery(string(b))
+
+    if err != nil {
+      t.Error("Expected no error parsing post data")
+      return
+    }
+
+    if parsedCommentFormValue["comment"][0] != "test comment" {
+      t.Error("Expected POST key value comment='test comment'")
+    }
+
+    w.WriteHeader(http.StatusOK)
+  })
+
+  err := client.CommentWallPost(1, 1, "test comment")
+
+  if err != nil {
+    t.Error("Expected no error in CommentWallPost()")
+  }
+}
+
+func TestDeleteComment(t *testing.T) {
+  setup()
+  defer teardown()
+
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "DELETE" {
+      t.Error("Expected DELETE method in DeleteComment()")
+    }
+
+    w.WriteHeader(http.StatusOK)
+  })
+
+  err := client.DeleteComment(1, 1, 1)
+
+  if err != nil {
+    t.Error("Expected no error in DeleteComment()")
+  }
+}
+
+func TestCreateWallPost(t *testing.T) {
+  expectedNewWallPost := NewWallPost{
+    Content: "this is a test",
+    Type:    "post",
+    Tags:    []string{"test1", "test2"},
+  }
+
+  setup()
+  defer teardown()
+
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "POST" {
+      t.Error("Expected POST method in CreateWallPost()")
+    }
+
+    b, _ := ioutil.ReadAll(r.Body)
+    defer r.Body.Close()
+
+    gotWallPost := NewWallPost{}
+    err := json.Unmarshal(b, &gotWallPost)
+
+    if err != nil {
+      t.Error("Expected no error unmarshaling json")
+      return
+    }
+
+    if reflect.DeepEqual(expectedNewWallPost, gotWallPost) == false {
+      t.Error("expectedNewWallPost != gotWallPost")
+    }
+
+    w.WriteHeader(http.StatusOK)
+  })
+
+  err := client.CreateWallPost(1, expectedNewWallPost)
+
+  if err != nil {
+    t.Error("Expected no error in CreateWallPost()")
+  }
+}
+
+func TestDeleteWallPost(t *testing.T) {
+  setup()
+  defer teardown()
+
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "DELETE" {
+      t.Error("Expected DELETE method in DeleteWallPost()")
+    }
+    w.WriteHeader(http.StatusOK)
+  })
+
+  err := client.DeleteWallPost(1, 1)
+
+  if err != nil {
+    t.Error("Expected no error in DeleteWallPost()")
   }
 }

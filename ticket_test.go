@@ -2,9 +2,11 @@ package snappy
 
 import (
   "bytes"
+  "encoding/json"
   "fmt"
   "io/ioutil"
   "net/http"
+  "net/url"
   "testing"
 )
 
@@ -200,5 +202,51 @@ func TestDownloadTicketAttachment(t *testing.T) {
 
   if !bytes.Equal(readBytes, []byte("hey now!")) {
     t.Error("expected 'hey now!'")
+  }
+}
+
+func TestUpdateTags(t *testing.T) {
+  expectedTags := []string{"test1", "test2"}
+  setup()
+  defer teardown()
+
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "POST" {
+      t.Error("Expected POST method in UpdateTags()")
+    }
+
+    b, _ := ioutil.ReadAll(r.Body)
+    defer r.Body.Close()
+
+    parsedTagsValue, err := url.ParseQuery(string(b))
+
+    if err != nil {
+      t.Error("Expected no error parsing post data")
+      return
+    }
+
+    jsonTags := parsedTagsValue["tags"][0]
+    gotTags := []string{}
+    err = json.Unmarshal([]byte(jsonTags), &gotTags)
+
+    if err != nil {
+      t.Error("Expected no error in unmarshaling tags")
+    }
+
+    if gotTags[0] != "test1" {
+      t.Error("Expected gotTags[0] = 'test1'")
+    }
+
+    if gotTags[1] != "test2" {
+      t.Error("Expected gotTags[1] = 'test2'")
+    }
+
+    w.WriteHeader(http.StatusOK)
+  })
+
+  err := client.UpdateTags(1, expectedTags...)
+
+  if err != nil {
+    t.Error("Expected no error in UpdateTags()")
   }
 }

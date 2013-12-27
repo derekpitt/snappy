@@ -9,6 +9,7 @@ import (
   "io/ioutil"
   "net/http"
   "net/url"
+  "strings"
 )
 
 // Snappy is the main type
@@ -46,22 +47,30 @@ func WithUsernameAndPassword(username, password string) *Snappy {
   }
 }
 
-func (s *Snappy) get(up urlAndParams) (reader io.ReadCloser, err error) {
-  client := &http.Client{}
-  fullURL := fmt.Sprintf("%s%s", s.endpointPrefix, up.url)
+func (up urlAndParams) finalURL(endpointPrefix string) string {
+  fullURL := fmt.Sprintf("%s%s", endpointPrefix, up.url)
 
   if len(up.params) > 0 {
     fullURL = fmt.Sprintf("%s?%s", fullURL, up.params.Encode())
   }
 
-  request, err := http.NewRequest("GET", fullURL, nil)
+  return fullURL
+}
+
+func (s *Snappy) doRequest(requestType string, up urlAndParams, contentType string, body io.Reader) (reader io.ReadCloser, err error) {
+  client := &http.Client{}
+  request, err := http.NewRequest(requestType, up.finalURL(s.endpointPrefix), body)
 
   if err != nil {
     return
   }
 
-  request.Header.Set("User-Agent", "Snappy go client ("+version+")")
   request.SetBasicAuth(s.username, s.password)
+
+  request.Header.Set("User-Agent", "Snappy go client ("+version+")")
+  if len(contentType) > 0 {
+    request.Header.Set("Content-Type", contentType)
+  }
 
   res, err := client.Do(request)
 
@@ -74,7 +83,36 @@ func (s *Snappy) get(up urlAndParams) (reader io.ReadCloser, err error) {
   if res.StatusCode != http.StatusOK {
     return nil, errors.New("Status NOT OK")
   }
+
   return res.Body, nil
+}
+
+func (s *Snappy) get(up urlAndParams) (reader io.ReadCloser, err error) {
+  return s.doRequest("GET", up, "", nil)
+}
+
+func (s *Snappy) post(up urlAndParams, contentType string, body io.Reader) (reader io.ReadCloser, err error) {
+  return s.doRequest("POST", up, contentType, body)
+}
+
+func (s *Snappy) postForm(up urlAndParams, values url.Values) (reader io.ReadCloser, err error) {
+  bodyReader := strings.NewReader(values.Encode())
+
+  return s.post(up, "application/x-www-form-urlencoded", bodyReader)
+}
+
+func (s *Snappy) postAsJSON(up urlAndParams, v interface{}) (reader io.ReadCloser, err error) {
+  b, err := json.Marshal(v)
+
+  if err != nil {
+    return
+  }
+
+  return s.post(up, "application/json", strings.NewReader(string(b)))
+}
+
+func (s *Snappy) del(up urlAndParams) (reader io.ReadCloser, err error) {
+  return s.doRequest("DELETE", up, "application/x-www-form-urlencoded", nil)
 }
 
 func (s *Snappy) getReadAll(up urlAndParams) (b []byte, err error) {
