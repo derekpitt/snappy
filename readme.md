@@ -18,16 +18,13 @@
       fmt.Println(ticket.Summary)
     }
 
-Right now I only have the GETs in. Posting and Deleting are next up on the TODO list!
-
 # Documentation
 
 [http://godoc.org/github.com/derekpitt/snappy](http://godoc.org/github.com/derekpitt/snappy)
 
 ## TODO
 
-  - Posts
-  - Deletes
+  - Uploading documents
   - Some more deep comparing in tests
 
 ## Random Thoughts
