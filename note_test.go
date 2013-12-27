@@ -10,10 +10,10 @@ import (
 
 func TestCreateNote(t *testing.T) {
   expectedNote := NewNote{
-    Subject:   "test from api",
-    MailboxID: 1,
-    TicketID:  1,
-    StaffID:   1,
+    Subject:     "test from api",
+    MailboxID:   1,
+    TicketNonce: "123",
+    StaffID:     1,
     To: []NoteAddress{
       NoteAddress{
         Name:    "Test 1",

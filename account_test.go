@@ -701,8 +701,8 @@ func TestCommentWallPost(t *testing.T) {
       return
     }
 
-    if parsedCommentFormValue["comment"][0] != "test comment" {
-      t.Error("Expected POST key value comment='test comment'")
+    if parsedCommentFormValue["content"][0] != "test comment" {
+      t.Error("Expected POST key value content='test comment'")
     }
 
     w.WriteHeader(http.StatusOK)

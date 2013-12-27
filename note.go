@@ -11,11 +11,11 @@ type NewNote struct {
   Subject string `json:"subject"`
   Message string `json:"message"`
 
-  MailboxID int           `json:"mailbox_id,omitempty"`
-  To        []NoteAddress `json:"to,omitempty"`
-  From      []NoteAddress `json:"from,omitempty"`
-  StaffID   int           `json:"staff_id,omitempty"`
-  TicketID  int           `json:"id,omitempty"`
+  MailboxID   int           `json:"mailbox_id,omitempty"`
+  To          []NoteAddress `json:"to,omitempty"`
+  From        []NoteAddress `json:"from,omitempty"`
+  StaffID     int           `json:"staff_id,omitempty"`
+  TicketNonce string        `json:"id,omitempty"`
 }
 
 // CreateNote will create a note using NewNote

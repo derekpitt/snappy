@@ -238,7 +238,7 @@ func (s *Snappy) CommentWallPost(accountID, wallPostID int, comment string) (err
   }
 
   rc, err := s.postForm(up, map[string][]string{
-    "comment": []string{comment},
+    "content": []string{comment},
   })
   defer rc.Close()
 
