@@ -33,28 +33,26 @@ func TestAccounts(t *testing.T) {
     `)
   })
 
-  accounts, err := client.Accounts()
+  got, err := client.Accounts()
 
   if err != nil {
     t.Error("Expected no error in Accounts()")
   }
 
-  if len(accounts) != 1 {
-    t.Error("Expected len(accounts) = 1")
+  expected := []Account{
+    Account{
+      ID:           3,
+      Organization: "Snappy Help",
+      Domain:       "help.besnappy.com",
+      PlanID:       1,
+      Active:       1,
+      CreatedAt:    "2012-12-05 15:24:20",
+      UpdatedAt:    "2013-05-07 19:48:06",
+      CustomDomain: "",
+    },
   }
 
-  expected := Account{
-    ID:           3,
-    Organization: "Snappy Help",
-    Domain:       "help.besnappy.com",
-    PlanID:       1,
-    Active:       1,
-    CreatedAt:    "2012-12-05 15:24:20",
-    UpdatedAt:    "2013-05-07 19:48:06",
-    CustomDomain: "",
-  }
-
-  if expected != accounts[0] {
+  if reflect.DeepEqual(expected, got) == false {
     t.Error("Expected account does not match")
   }
 }
@@ -109,62 +107,55 @@ func TestStaff(t *testing.T) {
     `)
   })
 
-  staff, err := client.Staff(1)
+  got, err := client.Staff(1)
 
   if err != nil {
     t.Error("Expected no error in Staff()")
   }
 
-  if len(staff) != 2 {
-    t.Error("Expected len(staff) = 2")
+  expected := []Employee{
+    Employee{
+      ID:         123,
+      Email:      "test1@test.com",
+      SMSNumber:  "",
+      FirstName:  "Test",
+      LastName:   "1",
+      Photo:      "",
+      Culture:    "en",
+      Notify:     1,
+      Signature:  "",
+      TourPlayed: 1,
+      TimeZone:   "America/Chicago",
+      NotifyNew:  1,
+      NewsReadAt: "2013-12-23 04:20:05",
+      UserName:   "test1",
+      CreatedAt:  "2013-07-04 04:16:56",
+      UpdatedAt:  "2013-12-23 04:20:05",
+      Address:    "test1@test.com",
+    },
+    Employee{
+      ID:         124,
+      Email:      "test2@test.com",
+      SMSNumber:  "",
+      FirstName:  "Test",
+      LastName:   "2",
+      Photo:      "",
+      Culture:    "en",
+      Notify:     1,
+      Signature:  "",
+      TourPlayed: 1,
+      TimeZone:   "America/Chicago",
+      NotifyNew:  0,
+      NewsReadAt: "2013-12-21 16:11:15",
+      UserName:   "test2",
+      CreatedAt:  "2013-07-05 16:12:24",
+      UpdatedAt:  "2013-12-21 16:11:15",
+      Address:    "test2@test.com",
+    },
   }
 
-  expected1 := Employee{
-    ID:         123,
-    Email:      "test1@test.com",
-    SMSNumber:  "",
-    FirstName:  "Test",
-    LastName:   "1",
-    Photo:      "",
-    Culture:    "en",
-    Notify:     1,
-    Signature:  "",
-    TourPlayed: 1,
-    TimeZone:   "America/Chicago",
-    NotifyNew:  1,
-    NewsReadAt: "2013-12-23 04:20:05",
-    UserName:   "test1",
-    CreatedAt:  "2013-07-04 04:16:56",
-    UpdatedAt:  "2013-12-23 04:20:05",
-    Address:    "test1@test.com",
-  }
-
-  expected2 := Employee{
-    ID:         124,
-    Email:      "test2@test.com",
-    SMSNumber:  "",
-    FirstName:  "Test",
-    LastName:   "2",
-    Photo:      "",
-    Culture:    "en",
-    Notify:     1,
-    Signature:  "",
-    TourPlayed: 1,
-    TimeZone:   "America/Chicago",
-    NotifyNew:  0,
-    NewsReadAt: "2013-12-21 16:11:15",
-    UserName:   "test2",
-    CreatedAt:  "2013-07-05 16:12:24",
-    UpdatedAt:  "2013-12-21 16:11:15",
-    Address:    "test2@test.com",
-  }
-
-  if expected1 != staff[0] {
-    t.Error("expected1 != staff[0]")
-  }
-
-  if expected2 != staff[1] {
-    t.Error("expected2 != staff[1]")
+  if reflect.DeepEqual(expected, got) == false {
+    t.Error("expected != got")
   }
 }
 
@@ -210,54 +201,48 @@ func TestMailboxes(t *testing.T) {
     `)
   })
 
-  mbs, err := client.Mailboxes(1)
+  got, err := client.Mailboxes(1)
 
   if err != nil {
     t.Error("Expected no error in Mailboxes()")
   }
 
-  if len(mbs) != 2 {
-    t.Error("Expected len(mbs) = 2")
+  expected := []Mailbox{
+    Mailbox{
+      ID:             1,
+      AccountID:      1,
+      Type:           "email",
+      Address:        "test@test.besnappy.com",
+      Display:        "Test1",
+      AutoResponding: 0,
+      AutoResponse:   "Test 1",
+      Active:         1,
+      CreatedAt:      "2013-09-06 21:05:07",
+      UpdatedAt:      "2013-09-06 21:05:07",
+      CustomAddress:  "test1@test.com",
+      Theme:          "snappy",
+      LocalPart:      "notifications",
+    },
+
+    Mailbox{
+      ID:             2,
+      AccountID:      1,
+      Type:           "email",
+      Address:        "test2@test.besnappy.com",
+      Display:        "Test2",
+      AutoResponding: 0,
+      AutoResponse:   "Test 2",
+      Active:         1,
+      CreatedAt:      "2013-09-06 21:05:07",
+      UpdatedAt:      "2013-09-06 21:05:07",
+      CustomAddress:  "test2@test.com",
+      Theme:          "snappy",
+      LocalPart:      "notifications",
+    },
   }
 
-  expected1 := Mailbox{
-    ID:             1,
-    AccountID:      1,
-    Type:           "email",
-    Address:        "test@test.besnappy.com",
-    Display:        "Test1",
-    AutoResponding: 0,
-    AutoResponse:   "Test 1",
-    Active:         1,
-    CreatedAt:      "2013-09-06 21:05:07",
-    UpdatedAt:      "2013-09-06 21:05:07",
-    CustomAddress:  "test1@test.com",
-    Theme:          "snappy",
-    LocalPart:      "notifications",
-  }
-
-  expected2 := Mailbox{
-    ID:             2,
-    AccountID:      1,
-    Type:           "email",
-    Address:        "test2@test.besnappy.com",
-    Display:        "Test2",
-    AutoResponding: 0,
-    AutoResponse:   "Test 2",
-    Active:         1,
-    CreatedAt:      "2013-09-06 21:05:07",
-    UpdatedAt:      "2013-09-06 21:05:07",
-    CustomAddress:  "test2@test.com",
-    Theme:          "snappy",
-    LocalPart:      "notifications",
-  }
-
-  if expected1 != mbs[0] {
-    t.Error("expected1 != mbs[0]")
-  }
-
-  if expected2 != mbs[1] {
-    t.Error("expected2 != mbs[1]")
+  if reflect.DeepEqual(expected, got) == false {
+    t.Error("expected != got")
   }
 }
 
@@ -282,7 +267,7 @@ func TestContactByID(t *testing.T) {
     `)
   })
 
-  contact, err := client.ContactByID(1, 1)
+  got, err := client.ContactByID(1, 1)
 
   if err != nil {
     t.Error("Expected no error in ContactByID()")
@@ -300,8 +285,8 @@ func TestContactByID(t *testing.T) {
     Address:   "test@test.com",
   }
 
-  if contact != expected {
-    t.Error("contact != expected")
+  if expected != got {
+    t.Error("expected != got")
   }
 }
 
@@ -326,7 +311,7 @@ func TestContactByEmail(t *testing.T) {
     `)
   })
 
-  contact, err := client.ContactByEmail(1, "test@test.com")
+  got, err := client.ContactByEmail(1, "test@test.com")
 
   if err != nil {
     t.Error("Expected no error in ContactByEmail()")
@@ -344,8 +329,8 @@ func TestContactByEmail(t *testing.T) {
     Address:   "test@test.com",
   }
 
-  if contact != expected {
-    t.Error("contact != expected")
+  if expected != got {
+    t.Error("expected != got")
   }
 }
 
@@ -496,29 +481,27 @@ func TestDocuments(t *testing.T) {
     `)
   })
 
-  docs, err := client.Documents(1)
+  got, err := client.Documents(1)
 
   if err != nil {
     t.Error("Expected no error in Documents()")
   }
 
-  if len(docs) != 1 {
-    t.Error("len(docs) != 1")
+  expected := []Document{
+    Document{
+      ID:         1,
+      AccountID:  1,
+      Filename:   "Filename",
+      Type:       "image/png",
+      Size:       59788,
+      StorageKey: "fake",
+      CreatedAt:  "2013-07-10 15:41:34",
+      UpdatedAt:  "2013-07-10 15:41:34",
+    },
   }
 
-  expected := Document{
-    ID:         1,
-    AccountID:  1,
-    Filename:   "Filename",
-    Type:       "image/png",
-    Size:       59788,
-    StorageKey: "fake",
-    CreatedAt:  "2013-07-10 15:41:34",
-    UpdatedAt:  "2013-07-10 15:41:34",
-  }
-
-  if expected != docs[0] {
-    t.Error("expected != docs[0]")
+  if reflect.DeepEqual(expected, got) == false {
+    t.Error("expected != got")
   }
 }
 
@@ -580,17 +563,32 @@ func TestWall(t *testing.T) {
     `)
   })
 
-  posts, err := client.Wall(1)
+  got, err := client.Wall(1)
 
   if err != nil {
     t.Error("Expected no error in Wall()")
   }
 
-  if len(posts) != 1 {
-    t.Error("len(posts) != 1")
+  expected := []WallPost{
+    WallPost{
+      ID:              1,
+      AccountID:       1,
+      StaffID:         1,
+      Type:            "post",
+      Content:         "test",
+      CreatedAt:       "2013-07-12 18:08:32",
+      UpdatedAt:       "2013-07-12 21:14:30",
+      Tags:            []string{"tag1"},
+      Likes:           []string{"Like 1"},
+      LikeCount:       1,
+      ContentMarkdown: "Markdown",
+      Comments:        []WallComment{},
+    },
   }
 
-  //TODO: deep test wall post
+  if reflect.DeepEqual(expected, got) == false {
+    t.Error("expected != got")
+  }
 }
 
 func TestWallAfter(t *testing.T) {
@@ -633,14 +631,14 @@ func TestWallAfter(t *testing.T) {
     `)
   })
 
-  posts, err := client.WallAfter(1, 1)
+  got, err := client.WallAfter(1, 1)
 
   if err != nil {
     t.Error("Expected no error in WallAfter()")
   }
 
-  if len(posts) != 1 {
-    t.Error("len(posts) != 1")
+  if len(got) != 1 {
+    t.Error("len(got) != 1")
   }
 }
 

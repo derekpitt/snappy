@@ -94,14 +94,14 @@ func TestWaitingAtMailbox(t *testing.T) {
     `)
   })
 
-  tickets, err := client.WaitingAtMailbox(1)
+  got, err := client.WaitingAtMailbox(1)
 
   if err != nil {
     t.Error("Expected no error in WaitingAtMailbox()")
   }
 
-  if len(tickets) != 1 {
-    t.Error("len(tickets) != 1")
+  if len(got) != 1 {
+    t.Error("len(got) != 1")
   }
 
   // TODO: compare deeply
@@ -196,16 +196,15 @@ func TestInboxAtMailbox(t *testing.T) {
     `)
   })
 
-  tickets, err := client.InboxAtMailbox(1)
+  got, err := client.InboxAtMailbox(1)
 
   if err != nil {
     t.Error("Expected no error in InboxAtMailbox()")
   }
 
-  if len(tickets) != 1 {
-    t.Error("len(tickets) != 1")
+  if len(got) != 1 {
+    t.Error("len(got) != 1")
   }
-
 }
 
 func TestYoursAtMailbox(t *testing.T) {
@@ -296,14 +295,14 @@ func TestYoursAtMailbox(t *testing.T) {
     `)
   })
 
-  tickets, err := client.YoursAtMailbox(1)
+  got, err := client.YoursAtMailbox(1)
 
   if err != nil {
     t.Error("Expected no error in YoursAtMailbox()")
   }
 
-  if len(tickets) != 1 {
-    t.Error("len(tickets) != 1")
+  if len(got) != 1 {
+    t.Error("len(got) != 1")
   }
 
 }

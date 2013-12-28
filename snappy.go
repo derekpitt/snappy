@@ -112,7 +112,7 @@ func (s *Snappy) postAsJSON(up urlAndParams, v interface{}) (reader io.ReadClose
 }
 
 func (s *Snappy) del(up urlAndParams) (reader io.ReadCloser, err error) {
-  return s.doRequest("DELETE", up, "application/x-www-form-urlencoded", nil)
+  return s.doRequest("DELETE", up, "", nil)
 }
 
 func (s *Snappy) getReadAll(up urlAndParams) (b []byte, err error) {

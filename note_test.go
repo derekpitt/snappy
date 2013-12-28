@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateNote(t *testing.T) {
-  expectedNote := NewNote{
+  expected := NewNote{
     Subject:     "test from api",
     MailboxID:   1,
     TicketNonce: "123",
@@ -34,23 +34,23 @@ func TestCreateNote(t *testing.T) {
     b, _ := ioutil.ReadAll(r.Body)
     defer r.Body.Close()
 
-    gotNote := NewNote{}
-    err := json.Unmarshal(b, &gotNote)
+    got := NewNote{}
+    err := json.Unmarshal(b, &got)
 
     if err != nil {
       t.Error("Expected no error in unmarshaling note")
       return
     }
 
-    if reflect.DeepEqual(expectedNote, gotNote) == false {
-      t.Error("expectedNote != gotNote")
+    if reflect.DeepEqual(expected, got) == false {
+      t.Error("expected != got")
       return
     }
 
     w.WriteHeader(http.StatusOK)
   })
 
-  err := client.CreateNote(expectedNote)
+  err := client.CreateNote(expected)
 
   if err != nil {
     t.Error("Expected no error in CreateNote()")

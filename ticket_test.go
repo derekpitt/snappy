@@ -7,6 +7,7 @@ import (
   "io/ioutil"
   "net/http"
   "net/url"
+  "reflect"
   "testing"
 )
 
@@ -170,14 +171,14 @@ func TestTicketNotes(t *testing.T) {
     `)
   })
 
-  notes, err := client.TicketNotes(1)
+  got, err := client.TicketNotes(1)
 
   if err != nil {
     t.Error("Expected no error in TicketNotes()")
   }
 
-  if len(notes) != 1 {
-    t.Error("Expected len(notes) == 1")
+  if len(got) != 1 {
+    t.Error("Expected len(got) == 1")
   }
 
 }
@@ -207,7 +208,6 @@ func TestDownloadTicketAttachment(t *testing.T) {
 }
 
 func TestUpdateTags(t *testing.T) {
-  expectedTags := []string{"test1", "test2"}
   setup()
   defer teardown()
 
@@ -227,25 +227,24 @@ func TestUpdateTags(t *testing.T) {
     }
 
     jsonTags := parsedTagsValue["tags"][0]
-    gotTags := []string{}
-    err = json.Unmarshal([]byte(jsonTags), &gotTags)
+
+    expected := []string{"test1", "test2"}
+    got := []string{}
+
+    err = json.Unmarshal([]byte(jsonTags), &got)
 
     if err != nil {
       t.Error("Expected no error in unmarshaling tags")
     }
 
-    if gotTags[0] != "test1" {
-      t.Error("Expected gotTags[0] = 'test1'")
-    }
-
-    if gotTags[1] != "test2" {
-      t.Error("Expected gotTags[1] = 'test2'")
+    if reflect.DeepEqual(expected, got) == false {
+      t.Error("expected != got")
     }
 
     w.WriteHeader(http.StatusOK)
   })
 
-  err := client.UpdateTags(1, expectedTags...)
+  err := client.UpdateTags(1, []string{"test1", "test2"}...)
 
   if err != nil {
     t.Error("Expected no error in UpdateTags()")
