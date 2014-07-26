@@ -1,23 +1,23 @@
 package snappy
 
 import (
-  "bytes"
-  "encoding/json"
-  "fmt"
-  "io/ioutil"
-  "net/http"
-  "net/url"
-  "reflect"
-  "testing"
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"reflect"
+	"testing"
 )
 
 func TestTicket(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
      {
         "id":1,
         "account_id":1,
@@ -96,23 +96,23 @@ func TestTicket(t *testing.T) {
         }
      }
     `)
-  })
+	})
 
-  _, err := client.Ticket(1)
+	_, err := client.Ticket(1)
 
-  if err != nil {
-    t.Error("Expected no error in Ticket()")
-  }
+	if err != nil {
+		t.Error("Expected no error in Ticket()")
+	}
 
 }
 
 func TestTicketNotes(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":1,
@@ -169,84 +169,84 @@ func TestTicketNotes(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.TicketNotes(1)
+	got, err := client.TicketNotes(1)
 
-  if err != nil {
-    t.Error("Expected no error in TicketNotes()")
-  }
+	if err != nil {
+		t.Error("Expected no error in TicketNotes()")
+	}
 
-  if len(got) != 1 {
-    t.Error("Expected len(got) == 1")
-  }
+	if len(got) != 1 {
+		t.Error("Expected len(got) == 1")
+	}
 
 }
 
 func TestDownloadTicketAttachment(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `hey now!`)
-  })
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `hey now!`)
+	})
 
-  rc, err := client.DownloadTicketAttachment(1, 1)
+	rc, err := client.DownloadTicketAttachment(1, 1)
 
-  if err != nil {
-    t.Error("Expected no error in DownloadTicketAttachment()")
-  }
+	if err != nil {
+		t.Error("Expected no error in DownloadTicketAttachment()")
+	}
 
-  defer rc.Close()
+	defer rc.Close()
 
-  readBytes, _ := ioutil.ReadAll(rc)
+	readBytes, _ := ioutil.ReadAll(rc)
 
-  if !bytes.Equal(readBytes, []byte("hey now!")) {
-    t.Error("expected 'hey now!'")
-  }
+	if !bytes.Equal(readBytes, []byte("hey now!")) {
+		t.Error("expected 'hey now!'")
+	}
 }
 
 func TestUpdateTags(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "POST" {
-      t.Error("Expected POST method in UpdateTags()")
-    }
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Error("Expected POST method in UpdateTags()")
+		}
 
-    b, _ := ioutil.ReadAll(r.Body)
-    defer r.Body.Close()
+		b, _ := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
 
-    parsedTagsValue, err := url.ParseQuery(string(b))
+		parsedTagsValue, err := url.ParseQuery(string(b))
 
-    if err != nil {
-      t.Error("Expected no error parsing post data")
-      return
-    }
+		if err != nil {
+			t.Error("Expected no error parsing post data")
+			return
+		}
 
-    jsonTags := parsedTagsValue["tags"][0]
+		jsonTags := parsedTagsValue["tags"][0]
 
-    expected := []string{"test1", "test2"}
-    got := []string{}
+		expected := []string{"test1", "test2"}
+		got := []string{}
 
-    err = json.Unmarshal([]byte(jsonTags), &got)
+		err = json.Unmarshal([]byte(jsonTags), &got)
 
-    if err != nil {
-      t.Error("Expected no error in unmarshaling tags")
-    }
+		if err != nil {
+			t.Error("Expected no error in unmarshaling tags")
+		}
 
-    if reflect.DeepEqual(expected, got) == false {
-      t.Error("expected != got")
-    }
+		if reflect.DeepEqual(expected, got) == false {
+			t.Error("expected != got")
+		}
 
-    w.WriteHeader(http.StatusOK)
-  })
+		w.WriteHeader(http.StatusOK)
+	})
 
-  err := client.UpdateTags(1, []string{"test1", "test2"}...)
+	err := client.UpdateTags(1, []string{"test1", "test2"}...)
 
-  if err != nil {
-    t.Error("Expected no error in UpdateTags()")
-  }
+	if err != nil {
+		t.Error("Expected no error in UpdateTags()")
+	}
 }

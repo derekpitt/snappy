@@ -1,23 +1,23 @@
 package snappy
 
 import (
-  "bytes"
-  "encoding/json"
-  "fmt"
-  "io/ioutil"
-  "net/http"
-  "net/url"
-  "reflect"
-  "testing"
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"reflect"
+	"testing"
 )
 
 func TestAccounts(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
         {
             "id": 3,
@@ -31,39 +31,39 @@ func TestAccounts(t *testing.T) {
         }
     ]
     `)
-  })
+	})
 
-  got, err := client.Accounts()
+	got, err := client.Accounts()
 
-  if err != nil {
-    t.Error("Expected no error in Accounts()")
-  }
+	if err != nil {
+		t.Error("Expected no error in Accounts()")
+	}
 
-  expected := []Account{
-    Account{
-      ID:           3,
-      Organization: "Snappy Help",
-      Domain:       "help.besnappy.com",
-      PlanID:       1,
-      Active:       1,
-      CreatedAt:    "2012-12-05 15:24:20",
-      UpdatedAt:    "2013-05-07 19:48:06",
-      CustomDomain: "",
-    },
-  }
+	expected := []Account{
+		Account{
+			ID:           3,
+			Organization: "Snappy Help",
+			Domain:       "help.besnappy.com",
+			PlanID:       1,
+			Active:       1,
+			CreatedAt:    "2012-12-05 15:24:20",
+			UpdatedAt:    "2013-05-07 19:48:06",
+			CustomDomain: "",
+		},
+	}
 
-  if reflect.DeepEqual(expected, got) == false {
-    t.Error("Expected account does not match")
-  }
+	if reflect.DeepEqual(expected, got) == false {
+		t.Error("Expected account does not match")
+	}
 }
 
 func TestStaff(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":123,
@@ -105,67 +105,67 @@ func TestStaff(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.Staff(1)
+	got, err := client.Staff(1)
 
-  if err != nil {
-    t.Error("Expected no error in Staff()")
-  }
+	if err != nil {
+		t.Error("Expected no error in Staff()")
+	}
 
-  expected := []Employee{
-    Employee{
-      ID:         123,
-      Email:      "test1@test.com",
-      SMSNumber:  "",
-      FirstName:  "Test",
-      LastName:   "1",
-      Photo:      "",
-      Culture:    "en",
-      Notify:     1,
-      Signature:  "",
-      TourPlayed: 1,
-      TimeZone:   "America/Chicago",
-      NotifyNew:  1,
-      NewsReadAt: "2013-12-23 04:20:05",
-      UserName:   "test1",
-      CreatedAt:  "2013-07-04 04:16:56",
-      UpdatedAt:  "2013-12-23 04:20:05",
-      Address:    "test1@test.com",
-    },
-    Employee{
-      ID:         124,
-      Email:      "test2@test.com",
-      SMSNumber:  "",
-      FirstName:  "Test",
-      LastName:   "2",
-      Photo:      "",
-      Culture:    "en",
-      Notify:     1,
-      Signature:  "",
-      TourPlayed: 1,
-      TimeZone:   "America/Chicago",
-      NotifyNew:  0,
-      NewsReadAt: "2013-12-21 16:11:15",
-      UserName:   "test2",
-      CreatedAt:  "2013-07-05 16:12:24",
-      UpdatedAt:  "2013-12-21 16:11:15",
-      Address:    "test2@test.com",
-    },
-  }
+	expected := []Employee{
+		Employee{
+			ID:         123,
+			Email:      "test1@test.com",
+			SMSNumber:  "",
+			FirstName:  "Test",
+			LastName:   "1",
+			Photo:      "",
+			Culture:    "en",
+			Notify:     1,
+			Signature:  "",
+			TourPlayed: 1,
+			TimeZone:   "America/Chicago",
+			NotifyNew:  1,
+			NewsReadAt: "2013-12-23 04:20:05",
+			UserName:   "test1",
+			CreatedAt:  "2013-07-04 04:16:56",
+			UpdatedAt:  "2013-12-23 04:20:05",
+			Address:    "test1@test.com",
+		},
+		Employee{
+			ID:         124,
+			Email:      "test2@test.com",
+			SMSNumber:  "",
+			FirstName:  "Test",
+			LastName:   "2",
+			Photo:      "",
+			Culture:    "en",
+			Notify:     1,
+			Signature:  "",
+			TourPlayed: 1,
+			TimeZone:   "America/Chicago",
+			NotifyNew:  0,
+			NewsReadAt: "2013-12-21 16:11:15",
+			UserName:   "test2",
+			CreatedAt:  "2013-07-05 16:12:24",
+			UpdatedAt:  "2013-12-21 16:11:15",
+			Address:    "test2@test.com",
+		},
+	}
 
-  if reflect.DeepEqual(expected, got) == false {
-    t.Error("expected != got")
-  }
+	if reflect.DeepEqual(expected, got) == false {
+		t.Error("expected != got")
+	}
 }
 
 func TestMailboxes(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":1,
@@ -199,60 +199,60 @@ func TestMailboxes(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.Mailboxes(1)
+	got, err := client.Mailboxes(1)
 
-  if err != nil {
-    t.Error("Expected no error in Mailboxes()")
-  }
+	if err != nil {
+		t.Error("Expected no error in Mailboxes()")
+	}
 
-  expected := []Mailbox{
-    Mailbox{
-      ID:             1,
-      AccountID:      1,
-      Type:           "email",
-      Address:        "test@test.besnappy.com",
-      Display:        "Test1",
-      AutoResponding: 0,
-      AutoResponse:   "Test 1",
-      Active:         1,
-      CreatedAt:      "2013-09-06 21:05:07",
-      UpdatedAt:      "2013-09-06 21:05:07",
-      CustomAddress:  "test1@test.com",
-      Theme:          "snappy",
-      LocalPart:      "notifications",
-    },
+	expected := []Mailbox{
+		Mailbox{
+			ID:             1,
+			AccountID:      1,
+			Type:           "email",
+			Address:        "test@test.besnappy.com",
+			Display:        "Test1",
+			AutoResponding: 0,
+			AutoResponse:   "Test 1",
+			Active:         1,
+			CreatedAt:      "2013-09-06 21:05:07",
+			UpdatedAt:      "2013-09-06 21:05:07",
+			CustomAddress:  "test1@test.com",
+			Theme:          "snappy",
+			LocalPart:      "notifications",
+		},
 
-    Mailbox{
-      ID:             2,
-      AccountID:      1,
-      Type:           "email",
-      Address:        "test2@test.besnappy.com",
-      Display:        "Test2",
-      AutoResponding: 0,
-      AutoResponse:   "Test 2",
-      Active:         1,
-      CreatedAt:      "2013-09-06 21:05:07",
-      UpdatedAt:      "2013-09-06 21:05:07",
-      CustomAddress:  "test2@test.com",
-      Theme:          "snappy",
-      LocalPart:      "notifications",
-    },
-  }
+		Mailbox{
+			ID:             2,
+			AccountID:      1,
+			Type:           "email",
+			Address:        "test2@test.besnappy.com",
+			Display:        "Test2",
+			AutoResponding: 0,
+			AutoResponse:   "Test 2",
+			Active:         1,
+			CreatedAt:      "2013-09-06 21:05:07",
+			UpdatedAt:      "2013-09-06 21:05:07",
+			CustomAddress:  "test2@test.com",
+			Theme:          "snappy",
+			LocalPart:      "notifications",
+		},
+	}
 
-  if reflect.DeepEqual(expected, got) == false {
-    t.Error("expected != got")
-  }
+	if reflect.DeepEqual(expected, got) == false {
+		t.Error("expected != got")
+	}
 }
 
 func TestContactByID(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     {
        "id":1,
        "account_id":1,
@@ -265,38 +265,38 @@ func TestContactByID(t *testing.T) {
        "address":"test@test.com"
     }
     `)
-  })
+	})
 
-  got, err := client.ContactByID(1, 1)
+	got, err := client.ContactByID(1, 1)
 
-  if err != nil {
-    t.Error("Expected no error in ContactByID()")
-  }
+	if err != nil {
+		t.Error("Expected no error in ContactByID()")
+	}
 
-  expected := Contact{
-    ID:        1,
-    AccountID: 1,
-    FirstName: "Test",
-    LastName:  "1",
-    Value:     "test@test.com",
-    Provider:  "email",
-    CreatedAt: "2013-12-21 15:50:19",
-    UpdatedAt: "2013-12-21 15:50:19",
-    Address:   "test@test.com",
-  }
+	expected := Contact{
+		ID:        1,
+		AccountID: 1,
+		FirstName: "Test",
+		LastName:  "1",
+		Value:     "test@test.com",
+		Provider:  "email",
+		CreatedAt: "2013-12-21 15:50:19",
+		UpdatedAt: "2013-12-21 15:50:19",
+		Address:   "test@test.com",
+	}
 
-  if expected != got {
-    t.Error("expected != got")
-  }
+	if expected != got {
+		t.Error("expected != got")
+	}
 }
 
 func TestContactByEmail(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     {
        "id":1,
        "account_id":1,
@@ -309,48 +309,48 @@ func TestContactByEmail(t *testing.T) {
        "address":"test@test.com"
     }
     `)
-  })
+	})
 
-  got, err := client.ContactByEmail(1, "test@test.com")
+	got, err := client.ContactByEmail(1, "test@test.com")
 
-  if err != nil {
-    t.Error("Expected no error in ContactByEmail()")
-  }
+	if err != nil {
+		t.Error("Expected no error in ContactByEmail()")
+	}
 
-  expected := Contact{
-    ID:        1,
-    AccountID: 1,
-    FirstName: "Test",
-    LastName:  "1",
-    Value:     "test@test.com",
-    Provider:  "email",
-    CreatedAt: "2013-12-21 15:50:19",
-    UpdatedAt: "2013-12-21 15:50:19",
-    Address:   "test@test.com",
-  }
+	expected := Contact{
+		ID:        1,
+		AccountID: 1,
+		FirstName: "Test",
+		LastName:  "1",
+		Value:     "test@test.com",
+		Provider:  "email",
+		CreatedAt: "2013-12-21 15:50:19",
+		UpdatedAt: "2013-12-21 15:50:19",
+		Address:   "test@test.com",
+	}
 
-  if expected != got {
-    t.Error("expected != got")
-  }
+	if expected != got {
+		t.Error("expected != got")
+	}
 }
 
 func TestSearch(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    q := r.URL.Query()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		q := r.URL.Query()
 
-    if q["page"][0] != "1" {
-      t.Error("Expected Search to send 'page' = 1")
-    }
+		if q["page"][0] != "1" {
+			t.Error("Expected Search to send 'page' = 1")
+		}
 
-    if q["query"][0] != "test" {
-      t.Error("Expected Search to send 'query' = 'test'")
-    }
+		if q["query"][0] != "test" {
+			t.Error("Expected Search to send 'query' = 'test'")
+		}
 
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     {
        "meta":{
           "total":1,
@@ -435,36 +435,36 @@ func TestSearch(t *testing.T) {
        ]
     }
     `)
-  })
+	})
 
-  results, err := client.Search(1, "test", 1)
+	results, err := client.Search(1, "test", 1)
 
-  if err != nil {
-    t.Error("Expected no error in Search()")
-  }
+	if err != nil {
+		t.Error("Expected no error in Search()")
+	}
 
-  if results.Meta.Page != "1" {
-    t.Error("Meta.Page != '1'")
-  }
+	if results.Meta.Page != "1" {
+		t.Error("Meta.Page != '1'")
+	}
 
-  if results.Meta.Total != 1 {
-    t.Error("Meta.Total != 1")
-  }
+	if results.Meta.Total != 1 {
+		t.Error("Meta.Total != 1")
+	}
 
-  if len(results.Tickets) != 1 {
-    t.Error("len(results.Tickets) != 1")
-  }
+	if len(results.Tickets) != 1 {
+		t.Error("len(results.Tickets) != 1")
+	}
 
-  // TODO: deep equal of returned ticket result
+	// TODO: deep equal of returned ticket result
 }
 
 func TestDocuments(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":1,
@@ -479,63 +479,63 @@ func TestDocuments(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.Documents(1)
+	got, err := client.Documents(1)
 
-  if err != nil {
-    t.Error("Expected no error in Documents()")
-  }
+	if err != nil {
+		t.Error("Expected no error in Documents()")
+	}
 
-  expected := []Document{
-    Document{
-      ID:         1,
-      AccountID:  1,
-      Filename:   "Filename",
-      Type:       "image/png",
-      Size:       59788,
-      StorageKey: "fake",
-      CreatedAt:  "2013-07-10 15:41:34",
-      UpdatedAt:  "2013-07-10 15:41:34",
-    },
-  }
+	expected := []Document{
+		Document{
+			ID:         1,
+			AccountID:  1,
+			Filename:   "Filename",
+			Type:       "image/png",
+			Size:       59788,
+			StorageKey: "fake",
+			CreatedAt:  "2013-07-10 15:41:34",
+			UpdatedAt:  "2013-07-10 15:41:34",
+		},
+	}
 
-  if reflect.DeepEqual(expected, got) == false {
-    t.Error("expected != got")
-  }
+	if reflect.DeepEqual(expected, got) == false {
+		t.Error("expected != got")
+	}
 }
 
 func TestDownloadDocument(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `hey now!`)
-  })
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `hey now!`)
+	})
 
-  rc, err := client.DownloadDocument(1, 1)
+	rc, err := client.DownloadDocument(1, 1)
 
-  if err != nil {
-    t.Error("Expected no error in DownloadDocument()")
-  }
+	if err != nil {
+		t.Error("Expected no error in DownloadDocument()")
+	}
 
-  defer rc.Close()
+	defer rc.Close()
 
-  readBytes, _ := ioutil.ReadAll(rc)
+	readBytes, _ := ioutil.ReadAll(rc)
 
-  if !bytes.Equal(readBytes, []byte("hey now!")) {
-    t.Error("expected 'hey now!'")
-  }
+	if !bytes.Equal(readBytes, []byte("hey now!")) {
+		t.Error("expected 'hey now!'")
+	}
 }
 
 func TestWall(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":1,
@@ -561,49 +561,49 @@ func TestWall(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.Wall(1)
+	got, err := client.Wall(1)
 
-  if err != nil {
-    t.Error("Expected no error in Wall()")
-  }
+	if err != nil {
+		t.Error("Expected no error in Wall()")
+	}
 
-  expected := []WallPost{
-    WallPost{
-      ID:              1,
-      AccountID:       1,
-      StaffID:         1,
-      Type:            "post",
-      Content:         "test",
-      CreatedAt:       "2013-07-12 18:08:32",
-      UpdatedAt:       "2013-07-12 21:14:30",
-      Tags:            []string{"tag1"},
-      Likes:           []string{"Like 1"},
-      LikeCount:       1,
-      ContentMarkdown: "Markdown",
-      Comments:        []WallComment{},
-    },
-  }
+	expected := []WallPost{
+		WallPost{
+			ID:              1,
+			AccountID:       1,
+			StaffID:         1,
+			Type:            "post",
+			Content:         "test",
+			CreatedAt:       "2013-07-12 18:08:32",
+			UpdatedAt:       "2013-07-12 21:14:30",
+			Tags:            []string{"tag1"},
+			Likes:           []string{"Like 1"},
+			LikeCount:       1,
+			ContentMarkdown: "Markdown",
+			Comments:        []WallComment{},
+		},
+	}
 
-  if reflect.DeepEqual(expected, got) == false {
-    t.Error("expected != got")
-  }
+	if reflect.DeepEqual(expected, got) == false {
+		t.Error("expected != got")
+	}
 }
 
 func TestWallAfter(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    q := r.URL.Query()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		q := r.URL.Query()
 
-    if q["after"][0] != "1" {
-      t.Error("Expected WallAfter to send 'after' = 1")
-    }
+		if q["after"][0] != "1" {
+			t.Error("Expected WallAfter to send 'after' = 1")
+		}
 
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":1,
@@ -629,163 +629,163 @@ func TestWallAfter(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.WallAfter(1, 1)
+	got, err := client.WallAfter(1, 1)
 
-  if err != nil {
-    t.Error("Expected no error in WallAfter()")
-  }
+	if err != nil {
+		t.Error("Expected no error in WallAfter()")
+	}
 
-  if len(got) != 1 {
-    t.Error("len(got) != 1")
-  }
+	if len(got) != 1 {
+		t.Error("len(got) != 1")
+	}
 }
 
 func TestLikeWallPost(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "POST" {
-      t.Error("Expected POST method in LikeWallPost()")
-    }
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Error("Expected POST method in LikeWallPost()")
+		}
 
-    w.WriteHeader(http.StatusOK)
-  })
+		w.WriteHeader(http.StatusOK)
+	})
 
-  err := client.LikeWallPost(1, 1)
+	err := client.LikeWallPost(1, 1)
 
-  if err != nil {
-    t.Error("Expected no error in LikeWallPost()")
-  }
+	if err != nil {
+		t.Error("Expected no error in LikeWallPost()")
+	}
 }
 
 func TestUnlikeWallPost(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "DELETE" {
-      t.Error("Expected DELETE method in LikeWallPost()")
-    }
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "DELETE" {
+			t.Error("Expected DELETE method in LikeWallPost()")
+		}
 
-    w.WriteHeader(http.StatusOK)
-  })
+		w.WriteHeader(http.StatusOK)
+	})
 
-  err := client.UnlikeWallPost(1, 1)
+	err := client.UnlikeWallPost(1, 1)
 
-  if err != nil {
-    t.Error("Expected no error in UnlikeWallPost()")
-  }
+	if err != nil {
+		t.Error("Expected no error in UnlikeWallPost()")
+	}
 }
 
 func TestCommentWallPost(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "POST" {
-      t.Error("Expected POST method in CommentWallPost()")
-    }
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Error("Expected POST method in CommentWallPost()")
+		}
 
-    b, _ := ioutil.ReadAll(r.Body)
-    defer r.Body.Close()
+		b, _ := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
 
-    parsedCommentFormValue, err := url.ParseQuery(string(b))
+		parsedCommentFormValue, err := url.ParseQuery(string(b))
 
-    if err != nil {
-      t.Error("Expected no error parsing post data")
-      return
-    }
+		if err != nil {
+			t.Error("Expected no error parsing post data")
+			return
+		}
 
-    if parsedCommentFormValue["content"][0] != "test comment" {
-      t.Error("Expected POST key value content='test comment'")
-    }
+		if parsedCommentFormValue["content"][0] != "test comment" {
+			t.Error("Expected POST key value content='test comment'")
+		}
 
-    w.WriteHeader(http.StatusOK)
-  })
+		w.WriteHeader(http.StatusOK)
+	})
 
-  err := client.CommentWallPost(1, 1, "test comment")
+	err := client.CommentWallPost(1, 1, "test comment")
 
-  if err != nil {
-    t.Error("Expected no error in CommentWallPost()")
-  }
+	if err != nil {
+		t.Error("Expected no error in CommentWallPost()")
+	}
 }
 
 func TestDeleteComment(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "DELETE" {
-      t.Error("Expected DELETE method in DeleteComment()")
-    }
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "DELETE" {
+			t.Error("Expected DELETE method in DeleteComment()")
+		}
 
-    w.WriteHeader(http.StatusOK)
-  })
+		w.WriteHeader(http.StatusOK)
+	})
 
-  err := client.DeleteComment(1, 1, 1)
+	err := client.DeleteComment(1, 1, 1)
 
-  if err != nil {
-    t.Error("Expected no error in DeleteComment()")
-  }
+	if err != nil {
+		t.Error("Expected no error in DeleteComment()")
+	}
 }
 
 func TestCreateWallPost(t *testing.T) {
-  expectedNewWallPost := NewWallPost{
-    Content: "this is a test",
-    Type:    "post",
-    Tags:    []string{"test1", "test2"},
-  }
+	expectedNewWallPost := NewWallPost{
+		Content: "this is a test",
+		Type:    "post",
+		Tags:    []string{"test1", "test2"},
+	}
 
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "POST" {
-      t.Error("Expected POST method in CreateWallPost()")
-    }
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Error("Expected POST method in CreateWallPost()")
+		}
 
-    b, _ := ioutil.ReadAll(r.Body)
-    defer r.Body.Close()
+		b, _ := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
 
-    gotWallPost := NewWallPost{}
-    err := json.Unmarshal(b, &gotWallPost)
+		gotWallPost := NewWallPost{}
+		err := json.Unmarshal(b, &gotWallPost)
 
-    if err != nil {
-      t.Error("Expected no error unmarshaling json")
-      return
-    }
+		if err != nil {
+			t.Error("Expected no error unmarshaling json")
+			return
+		}
 
-    if reflect.DeepEqual(expectedNewWallPost, gotWallPost) == false {
-      t.Error("expectedNewWallPost != gotWallPost")
-    }
+		if reflect.DeepEqual(expectedNewWallPost, gotWallPost) == false {
+			t.Error("expectedNewWallPost != gotWallPost")
+		}
 
-    w.WriteHeader(http.StatusOK)
-  })
+		w.WriteHeader(http.StatusOK)
+	})
 
-  err := client.CreateWallPost(1, expectedNewWallPost)
+	err := client.CreateWallPost(1, expectedNewWallPost)
 
-  if err != nil {
-    t.Error("Expected no error in CreateWallPost()")
-  }
+	if err != nil {
+		t.Error("Expected no error in CreateWallPost()")
+	}
 }
 
 func TestDeleteWallPost(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "DELETE" {
-      t.Error("Expected DELETE method in DeleteWallPost()")
-    }
-    w.WriteHeader(http.StatusOK)
-  })
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "DELETE" {
+			t.Error("Expected DELETE method in DeleteWallPost()")
+		}
+		w.WriteHeader(http.StatusOK)
+	})
 
-  err := client.DeleteWallPost(1, 1)
+	err := client.DeleteWallPost(1, 1)
 
-  if err != nil {
-    t.Error("Expected no error in DeleteWallPost()")
-  }
+	if err != nil {
+		t.Error("Expected no error in DeleteWallPost()")
+	}
 }

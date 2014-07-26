@@ -1,115 +1,115 @@
 package snappy
 
 import (
-  "encoding/json"
-  "fmt"
-  "io"
+	"encoding/json"
+	"fmt"
+	"io"
 )
 
 // Ticket holds information about a ticket
 type Ticket struct {
-  ID                int      `json:"id"`
-  AccountID         int      `json:"account_id"`
-  MailboxID         int      `json:"mailbox_id"`
-  CreatedVia        string   `json:"created_via"`
-  LastReplyBy       string   `json:"last_reply_by"`
-  LastReplyAt       int      `json:"last_reply_at"`
-  OpenedByStaffID   int      `json:"opened_by_staff_id"`
-  OpenedByContactID int      `json:"opened_by_contact_id"`
-  OpenedAt          int      `json:"opened_at"`
-  Status            string   `json:"status"`
-  FirstStaffReplyAt string   `json:"first_staff_reply_at"`
-  DefaultSubject    string   `json:"default_subject"`
-  Summary           string   `json:"summary"`
-  CreatedAt         int      `json:"created_at"`
-  UpdatedAt         string   `json:"updated_at"`
-  Unread            bool     `json:"unread"`
-  Tags              []string `json:"tags"`
-  TicketNonce       string   `json:"nonce"`
+	ID                int      `json:"id"`
+	AccountID         int      `json:"account_id"`
+	MailboxID         int      `json:"mailbox_id"`
+	CreatedVia        string   `json:"created_via"`
+	LastReplyBy       string   `json:"last_reply_by"`
+	LastReplyAt       int      `json:"last_reply_at"`
+	OpenedByStaffID   int      `json:"opened_by_staff_id"`
+	OpenedByContactID int      `json:"opened_by_contact_id"`
+	OpenedAt          int      `json:"opened_at"`
+	Status            string   `json:"status"`
+	FirstStaffReplyAt string   `json:"first_staff_reply_at"`
+	DefaultSubject    string   `json:"default_subject"`
+	Summary           string   `json:"summary"`
+	CreatedAt         int      `json:"created_at"`
+	UpdatedAt         string   `json:"updated_at"`
+	Unread            bool     `json:"unread"`
+	Tags              []string `json:"tags"`
+	TicketNonce       string   `json:"nonce"`
 
-  Contacts []Contact `json:"contacts"`
-  Mailbox  Mailbox   `json:"mailbox"`
-  Opener   Contact   `json:"opener"`
+	Contacts []Contact `json:"contacts"`
+	Mailbox  Mailbox   `json:"mailbox"`
+	Opener   Contact   `json:"opener"`
 }
 
 // Ticket gets the details of a ticket
 func (s *Snappy) Ticket(ticketID int) (ticket Ticket, err error) {
-  up := urlAndParams{
-    url: fmt.Sprintf("/ticket/%d", ticketID),
-  }
+	up := urlAndParams{
+		url: fmt.Sprintf("/ticket/%d", ticketID),
+	}
 
-  err = s.unmarshalJSONAtURL(up, &ticket)
-  return
+	err = s.unmarshalJSONAtURL(up, &ticket)
+	return
 }
 
 // Document holds information about a document. Can be a Document on the account or a document attached to a ticket
 type Document struct {
-  ID         int    `json:"id"`
-  AccountID  int    `json:"account_id"`
-  NoteID     int    `json:"note_id"`
-  Filename   string `json:"filename"`
-  Type       string `json:"type"`
-  Size       int    `json:"size"`
-  StorageKey string `json:"storage_key"`
-  CreatedAt  string `json:"created_at"`
-  UpdatedAt  string `json:"updated_at"`
+	ID         int    `json:"id"`
+	AccountID  int    `json:"account_id"`
+	NoteID     int    `json:"note_id"`
+	Filename   string `json:"filename"`
+	Type       string `json:"type"`
+	Size       int    `json:"size"`
+	StorageKey string `json:"storage_key"`
+	CreatedAt  string `json:"created_at"`
+	UpdatedAt  string `json:"updated_at"`
 }
 
 // Note holds information about a note.
 type Note struct {
-  ID                 int    `json:"id"`
-  AccountID          int    `json:"account_id"`
-  TicketID           int    `json:"ticket_id"`
-  CreatedByStaffID   int    `json:"created_by_staff_id"`
-  CreatedByContactID int    `json:"created_by_contact_id"`
-  Scope              string `json:"scope"`
-  CreatedAt          int    `json:"created_at"`
-  UpdatedAt          string `json:"updated_at"`
-  Content            string `json:"content"`
+	ID                 int    `json:"id"`
+	AccountID          int    `json:"account_id"`
+	TicketID           int    `json:"ticket_id"`
+	CreatedByStaffID   int    `json:"created_by_staff_id"`
+	CreatedByContactID int    `json:"created_by_contact_id"`
+	Scope              string `json:"scope"`
+	CreatedAt          int    `json:"created_at"`
+	UpdatedAt          string `json:"updated_at"`
+	Content            string `json:"content"`
 
-  Contacts    []Contact  `json:"contacts"`
-  Creator     Contact    `json:"creator"`
-  Attachments []Document `json:"attachments"`
+	Contacts    []Contact  `json:"contacts"`
+	Creator     Contact    `json:"creator"`
+	Attachments []Document `json:"attachments"`
 }
 
 // TicketNotes gets the notes attached to a ticketID
 func (s *Snappy) TicketNotes(ticketID int) (notes []Note, err error) {
-  up := urlAndParams{
-    url: fmt.Sprintf("/ticket/%d/notes", ticketID),
-  }
+	up := urlAndParams{
+		url: fmt.Sprintf("/ticket/%d/notes", ticketID),
+	}
 
-  err = s.unmarshalJSONAtURL(up, &notes)
-  return
+	err = s.unmarshalJSONAtURL(up, &notes)
+	return
 }
 
 // DownloadTicketAttachment downloads an attachment.
 // Close the read closer after you are done with it please :)
 func (s *Snappy) DownloadTicketAttachment(ticketID, attachmentID int) (rc io.ReadCloser, err error) {
-  up := urlAndParams{
-    url: fmt.Sprintf("/ticket/%d/attachment/%d/download", ticketID, attachmentID),
-  }
+	up := urlAndParams{
+		url: fmt.Sprintf("/ticket/%d/attachment/%d/download", ticketID, attachmentID),
+	}
 
-  return s.get(up)
+	return s.get(up)
 }
 
 // UpdateTags will update the tags for a ticket
 // If you want to use a []string{} gfor tags...  call lile:
 // s.UpdateTags(1234, []string{"1", "2"}...)
 func (s *Snappy) UpdateTags(ticketID int, tags ...string) (err error) {
-  up := urlAndParams{
-    url: fmt.Sprintf("/ticket/%d/tags", ticketID),
-  }
+	up := urlAndParams{
+		url: fmt.Sprintf("/ticket/%d/tags", ticketID),
+	}
 
-  b, err := json.Marshal(tags)
+	b, err := json.Marshal(tags)
 
-  if err != nil {
-    return
-  }
+	if err != nil {
+		return
+	}
 
-  rc, err := s.postForm(up, map[string][]string{
-    "tags": []string{string(b)},
-  })
-  defer rc.Close()
+	rc, err := s.postForm(up, map[string][]string{
+		"tags": []string{string(b)},
+	})
+	defer rc.Close()
 
-  return
+	return
 }

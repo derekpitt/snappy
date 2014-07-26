@@ -1,18 +1,18 @@
 package snappy
 
 import (
-  "fmt"
-  "net/http"
-  "testing"
+	"fmt"
+	"net/http"
+	"testing"
 )
 
 func TestWaitingAtMailbox(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":1,
@@ -92,29 +92,29 @@ func TestWaitingAtMailbox(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.WaitingAtMailbox(1)
+	got, err := client.WaitingAtMailbox(1)
 
-  if err != nil {
-    t.Error("Expected no error in WaitingAtMailbox()")
-  }
+	if err != nil {
+		t.Error("Expected no error in WaitingAtMailbox()")
+	}
 
-  if len(got) != 1 {
-    t.Error("len(got) != 1")
-  }
+	if len(got) != 1 {
+		t.Error("len(got) != 1")
+	}
 
-  // TODO: compare deeply
+	// TODO: compare deeply
 
 }
 
 func TestInboxAtMailbox(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":1,
@@ -194,26 +194,26 @@ func TestInboxAtMailbox(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.InboxAtMailbox(1)
+	got, err := client.InboxAtMailbox(1)
 
-  if err != nil {
-    t.Error("Expected no error in InboxAtMailbox()")
-  }
+	if err != nil {
+		t.Error("Expected no error in InboxAtMailbox()")
+	}
 
-  if len(got) != 1 {
-    t.Error("len(got) != 1")
-  }
+	if len(got) != 1 {
+		t.Error("len(got) != 1")
+	}
 }
 
 func TestYoursAtMailbox(t *testing.T) {
-  setup()
-  defer teardown()
+	setup()
+	defer teardown()
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, `
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `
     [
        {
           "id":1,
@@ -293,16 +293,16 @@ func TestYoursAtMailbox(t *testing.T) {
        }
     ]
     `)
-  })
+	})
 
-  got, err := client.YoursAtMailbox(1)
+	got, err := client.YoursAtMailbox(1)
 
-  if err != nil {
-    t.Error("Expected no error in YoursAtMailbox()")
-  }
+	if err != nil {
+		t.Error("Expected no error in YoursAtMailbox()")
+	}
 
-  if len(got) != 1 {
-    t.Error("len(got) != 1")
-  }
+	if len(got) != 1 {
+		t.Error("len(got) != 1")
+	}
 
 }
